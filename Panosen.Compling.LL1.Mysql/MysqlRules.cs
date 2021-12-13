@@ -31,12 +31,9 @@ namespace Panosen.Compling.LL1.Mysql
             rules.Add(ToRule("DELETE_STATEMENT", "delete"));
 
             rules.Add(ToRule("SELECT_PART", "select", "COLUMNS"));
-            rules.Add(ToRule("COLUMNS", "COLUMN", "COLUMNS_RIGHT"));
-            rules.Add(ToRule("COLUMNS_RIGHT", ",", "COLUMN", "COLUMNS_RIGHT"));
+            rules.Add(ToRule("COLUMNS", "IDENTIFIER", "COLUMNS_RIGHT"));
+            rules.Add(ToRule("COLUMNS_RIGHT", ",", "IDENTIFIER", "COLUMNS_RIGHT"));
             rules.Add(ToRule("COLUMNS_RIGHT", "[Null]"));
-            rules.Add(ToRule("COLUMN", "a"));
-            rules.Add(ToRule("COLUMN", "b"));
-            rules.Add(ToRule("COLUMN", "c"));
 
             rules.Add(ToRule("FROM_PART", "from", "TABLE"));
             rules.Add(ToRule("TABLE", "book"));
@@ -58,16 +55,32 @@ namespace Panosen.Compling.LL1.Mysql
             rules.Add(ToRule("NUMBER_RIGHT", "NUMBER", "NUMBER_RIGHT"));
             rules.Add(ToRule("NUMBER_RIGHT", "[Null]"));
 
-            rules.Add(ToRule("NUMBER", "0"));
-            rules.Add(ToRule("NUMBER", "1"));
-            rules.Add(ToRule("NUMBER", "2"));
-            rules.Add(ToRule("NUMBER", "3"));
-            rules.Add(ToRule("NUMBER", "4"));
-            rules.Add(ToRule("NUMBER", "5"));
-            rules.Add(ToRule("NUMBER", "6"));
-            rules.Add(ToRule("NUMBER", "7"));
-            rules.Add(ToRule("NUMBER", "8"));
-            rules.Add(ToRule("NUMBER", "9"));
+            //标志符
+            rules.Add(ToRule("IDENTIFIER", "UNDERLINE", "IDENTIFIER_RIGHT"));
+            rules.Add(ToRule("IDENTIFIER", "LETTER", "IDENTIFIER_RIGHT"));
+            rules.Add(ToRule("IDENTIFIER_RIGHT", "UNDERLINE_LETTER_NUMBER", "IDENTIFIER_RIGHT"));
+            rules.Add(ToRule("IDENTIFIER_RIGHT", "[Null]"));
+
+            rules.Add(ToRule("UNDERLINE_LETTER_NUMBER", "LETTER"));
+            rules.Add(ToRule("UNDERLINE_LETTER_NUMBER", "NUMBER"));
+            rules.Add(ToRule("UNDERLINE_LETTER_NUMBER", "UNDERLINE"));
+
+            //字母
+            for (int index = 'a'; index <= 'z'; index++)
+            {
+                rules.Add(ToRule("LETTER", ((char)index).ToString()));
+            }
+            for (int index = 'A'; index <= 'Z'; index++)
+            {
+                rules.Add(ToRule("LETTER", ((char)index).ToString()));
+            }
+            //数字
+            for (int index = '0'; index <= '9'; index++)
+            {
+                rules.Add(ToRule("NUMBER", ((char)index).ToString()));
+            }
+            //下划线
+            rules.Add(ToRule("UNDERLINE", "_"));
 
             return rules;
         }
@@ -93,13 +106,18 @@ namespace Panosen.Compling.LL1.Mysql
                 return SymbolType.Epsilon;
             }
 
+            if (item.Length == 1)
+            {
+                return SymbolType.Terminal;
+            }
+
             foreach (var ch in item)
             {
                 if (ch == '_')
                 {
                     continue;
                 }
-                if (ch < 'A' || ch > 'Z')
+                if ('a' <= ch && ch <= 'z')
                 {
                     return SymbolType.Terminal;
                 }

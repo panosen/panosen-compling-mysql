@@ -27,23 +27,14 @@ namespace Panosen.Compling.LL1.Mysql.MSTest
             Grammar grammar = new Grammar();
             grammar.Rules = new MysqlRules().GetRules();
 
-            var tokenList = new List<Symbol>();
-            tokenList.Add(new Symbol { Type = SymbolType.Terminal, Value = "select" });
-            tokenList.Add(new Symbol { Type = SymbolType.Terminal, Value = "a" });
-            tokenList.Add(new Symbol { Type = SymbolType.Terminal, Value = "," });
-            tokenList.Add(new Symbol { Type = SymbolType.Terminal, Value = "b" });
-            tokenList.Add(new Symbol { Type = SymbolType.Terminal, Value = "from" });
-            tokenList.Add(new Symbol { Type = SymbolType.Terminal, Value = "book" });
-            tokenList.Add(new Symbol { Type = SymbolType.Terminal, Value = "limit" });
-            tokenList.Add(new Symbol { Type = SymbolType.Terminal, Value = "1" });
-            tokenList.Add(new Symbol { Type = SymbolType.Terminal, Value = "," });
-            tokenList.Add(new Symbol { Type = SymbolType.Terminal, Value = "2" });
-            tokenList.Add(new Symbol { Type = SymbolType.Terminal, Value = ";" });
+            var tokenCollection = new GrammarTokenizer(grammar.Rules).Analyze("select a, b from book limit 1,2;");
+
+            Assert.AreEqual(11, tokenCollection.Count());
 
             GrammarNode root;
-            Symbol errorToken;
+            Token errorToken;
 
-            var accept = LL1Analyser.Analyse(tokenList, out root, out errorToken, grammar);
+            var accept = LL1Analyser.Analyse(tokenCollection, out root, out errorToken, grammar);
 
             JsonSerializerSettings settings = new JsonSerializerSettings();
             settings.NullValueHandling = NullValueHandling.Ignore;
