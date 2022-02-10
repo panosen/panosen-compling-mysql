@@ -24,10 +24,23 @@ namespace Panosen.Compling.LL1.Mysql.MSTest
         [TestMethod]
         public void TestSelectPart()
         {
-            Grammar grammar = new Grammar();
-            grammar.Rules = new MysqlRules().GetRules();
+            var productionRules = new ProductionRuleCollection(new MysqlRules().GetRules());
 
-            var tokenCollection = new GrammarTokenizer(grammar.Rules).Analyze("select a, b from book limit 1,2;");
+            Grammar grammar = new Grammar();
+            grammar.Rules = productionRules.ProductionRules;
+
+            var tokenCollection = new TokenCollection();
+            tokenCollection.AddToken("select");
+            tokenCollection.AddToken("a");
+            tokenCollection.AddToken(",");
+            tokenCollection.AddToken("b");
+            tokenCollection.AddToken("from");
+            tokenCollection.AddToken("book");
+            tokenCollection.AddToken("limit");
+            tokenCollection.AddToken("1");
+            tokenCollection.AddToken(",");
+            tokenCollection.AddToken("2");
+            tokenCollection.AddToken(";");
 
             Assert.AreEqual(11, tokenCollection.Count());
 
@@ -39,8 +52,6 @@ namespace Panosen.Compling.LL1.Mysql.MSTest
             JsonSerializerSettings settings = new JsonSerializerSettings();
             settings.NullValueHandling = NullValueHandling.Ignore;
             settings.Converters.Add(new TINYNodeConvertor());
-
-            File.WriteAllText(@"f:\tmp007\2.json", JsonConvert.SerializeObject(root, Formatting.Indented, settings));
 
             Assert.IsTrue(accept);
         }

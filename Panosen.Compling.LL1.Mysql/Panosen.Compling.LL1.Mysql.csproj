@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Panosen.Compling.LL1" Version="0.2.0" />
+    <PackageReference Include="Panosen.Compling.LL1" Version="0.2.2" />
   </ItemGroup>
 
 </Project>
